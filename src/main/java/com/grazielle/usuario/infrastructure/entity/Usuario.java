@@ -1,10 +1,7 @@
 package com.grazielle.usuario.infrastructure.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
 
@@ -14,6 +11,8 @@ import java.util.List;
 @NoArgsConstructor
 @Entity
 @Table(name = "usuario")
+@Builder
+
 
 
 public class Usuario {
@@ -30,7 +29,7 @@ public class Usuario {
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "usuario_id", referencedColumnName = "id")
-    private List<Telefone.Endereco> enderecos;
+    private List<Endereco> enderecos;
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "usuario_id", referencedColumnName = "id")
