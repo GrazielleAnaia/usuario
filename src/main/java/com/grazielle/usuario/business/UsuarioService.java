@@ -56,12 +56,12 @@ public class UsuarioService {
     }
 
     public UsuarioDTO buscarUsuarioPorEmail(String email) {
-        try{
+        try {
             return usuarioConverter.paraUsuarioDTO(
                     usuarioRepository.findByEmail(email).orElseThrow(() ->
-                    new ResourceNotFoundException("Email not found." + email)));
+                            new ResourceNotFoundException("Email not found." + email)));
 
-        } catch(ResourceNotFoundException e) {
+        } catch (ResourceNotFoundException e) {
             throw new ResourceNotFoundException("Email  not found.", e.getCause());
 
         }
@@ -102,6 +102,25 @@ public class UsuarioService {
         Telefone entity = telefoneRepository.findById(idTelefone).orElseThrow(() ->
                 new ResourceNotFoundException("Telephone not found." + idTelefone));
         Telefone telefone = usuarioConverter.updateTelefone(telefoneDTO, entity);
+        return usuarioConverter.paraTelefoneDTO(telefoneRepository.save(telefone));
+    }
+
+    public EnderecoDTO cadastraEndereco(String token, EnderecoDTO dto) {
+        String email = jwtUtil.extraiEmailToken(token.substring(7));
+        Usuario usuario = usuarioRepository.findByEmail(email).orElseThrow(() ->
+                new ResourceNotFoundException("Email nao encontrado." + email));
+
+        Endereco endereco = usuarioConverter.paraEnderecoEntity(dto, usuario.getId());
+        Endereco enderecoEntity = enderecoRepository.save(endereco);
+        return usuarioConverter.paraEnderecoDTO(enderecoEntity);
+    }
+
+    public TelefoneDTO cadastraTelefone(String token, TelefoneDTO dto) {
+        String email = jwtUtil.extraiEmailToken(token);
+        Usuario usuario = usuarioRepository.findByEmail(email).orElseThrow(() -> new
+                ResourceNotFoundException("Email nao encontrado." + email));
+
+        Telefone telefone = usuarioConverter.paraTelefoneEntity(dto, usuario.getId());
         return usuarioConverter.paraTelefoneDTO(telefoneRepository.save(telefone));
     }
 
